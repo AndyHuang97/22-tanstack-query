@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Modal from "../UI/Modal.jsx";
 import EventForm from "./EventForm.jsx";
 import { useMutation } from "@tanstack/react-query";
-import { createNewEvent } from "../../util/http.js";
+import { createNewEvent, queryClient } from "../../util/http.js";
 import ErrorBlock from "../UI/ErrorBlock.jsx";
 
 export default function NewEvent() {
@@ -12,6 +12,12 @@ export default function NewEvent() {
   // must be called explicitly
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: createNewEvent,
+    onSuccess: () => {
+      // Match all queries that contains given queryKey
+      // Could use key {exact: true} to match exact keys
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      navigate("/events");
+    },
   });
 
   function handleSubmit(formData) {
