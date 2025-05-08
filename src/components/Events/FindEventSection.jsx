@@ -7,7 +7,7 @@ import EventItem from "./EventItem";
 
 export default function FindEventSection() {
   const searchElement = useRef();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // to rerender on submit
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["events", {search: searchTerm}],
