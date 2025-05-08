@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchEvents } from "../../util/http.js";
 
 export default function NewEventsSection() {
+  // useQuery calls the querFn on render
   // error refers to the error thrown by queryFn
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["events"], // this is the key for the cache used by tanstack query
