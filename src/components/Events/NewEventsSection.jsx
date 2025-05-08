@@ -8,7 +8,7 @@ export default function NewEventsSection() {
   // error refers to the error thrown by queryFn
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["events"], // this is the key for the cache used by tanstack query
-    queryFn: fetchEvents,
+    queryFn: fetchEvents, // NOTE: by default, react query passes an object with predefined keys
     staleTime: 5000, // default 0, time interval after which to fetch data in a page after switching page and back
     //gcTime: 1000, // default 5 min, how long data is kept in cache
   });

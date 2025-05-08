@@ -10,8 +10,8 @@ export default function FindEventSection() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ["events", searchTerm],
-    queryFn: () => fetchEvents(searchTerm),
+    queryKey: ["events", {search: searchTerm}],
+    queryFn: ({ signal }) => fetchEvents({ signal, searchTerm }), // destructure the default object passed by react query
   });
 
   function handleSubmit(event) {
