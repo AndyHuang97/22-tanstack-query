@@ -27,7 +27,10 @@ export default function EventDetails() {
   } = useMutation({
     mutationFn: deleteEvent,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({
+        queryKey: ["events"],
+        refetchType: "active", // default: "active", use "none" to not refetch the page you are on
+      });
       navigate("/events");
     },
   });
