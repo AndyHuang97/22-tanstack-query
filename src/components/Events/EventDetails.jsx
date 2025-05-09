@@ -32,9 +32,75 @@ export default function EventDetails() {
     },
   });
 
-  function handleDelete(id) {
-    mutate({ id });
+  function handleDelete() {
+    mutate({ id: params.id });
   }
+
+  let content;
+
+  if (isFetchPending) {
+    content = (
+      <div id='event-details-content' className='center'>
+        <p>Fetching event details ...</p>
+      </div>
+    );
+  }
+
+  if (isFetchError) {
+    content = (
+      <div id='event-details-content' className='center'>
+        <ErrorBlock
+          title='Failed to fetch event details.'
+          message={fetchError.info?.message || "Please try again later"}
+        />
+      </div>
+    );
+  }
+
+  if (data) {
+    const formattedDate = new Date(data.date).toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+
+    content = (
+      <>
+        <header>
+          <h1>{data.title}</h1>
+          {isDeletePending && <p>Deleting event ...</p>}
+          {!isDeletePending && (
+            <nav>
+              <button onClick={() => handleDelete()}>Delete</button>
+              <Link to='edit'>Edit</Link>
+            </nav>
+          )}
+        </header>
+        {isDeleteError && (
+          <ErrorBlock
+            title='Failed to delete event.'
+            message={deleteError.info?.message || "Please try again later"}
+          />
+        )}
+        <div id='event-details-content'>
+          <img
+            src={`http://localhost:3000/${data.image}`}
+            alt={data.location}
+          />
+          <div id='event-details-info'>
+            <div>
+              <p id='event-details-location'>{data.location}</p>
+              <time dateTime={`Todo-DateT$Todo-Time`}>
+                {formattedDate} @ {data.time}
+              </time>
+            </div>
+            <p id='event-details-description'>{data.description}</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Outlet />
@@ -43,50 +109,7 @@ export default function EventDetails() {
           View all Events
         </Link>
       </Header>
-      {isFetchPending && (
-        <p style={{ textAlign: "center" }}>Fetching event details ...</p>
-      )}
-      {isFetchError && (
-        <ErrorBlock
-          title='Failed to fetch event details.'
-          message={fetchError.info?.message || "Please try again later"}
-        />
-      )}
-      {data && (
-        <article id='event-details'>
-          <header>
-            <h1>{data.title}</h1>
-            {isDeletePending && <p>Deleting event ...</p>}
-            {!isDeletePending && (
-              <nav>
-                <button onClick={() => handleDelete(params.id)}>Delete</button>
-                <Link to='edit'>Edit</Link>
-              </nav>
-            )}
-          </header>
-          {isDeleteError && (
-            <ErrorBlock
-              title='Failed to delete event.'
-              message={deleteError.info?.message || "Please try again later"}
-            />
-          )}
-          <div id='event-details-content'>
-            <img
-              src={"http://localhost:3000/" + data.image}
-              alt={data.location}
-            />
-            <div id='event-details-info'>
-              <div>
-                <p id='event-details-location'>{data.location}</p>
-                <time dateTime={`Todo-DateT$Todo-Time`}>
-                  {data.date} @ {data.time}
-                </time>
-              </div>
-              <p id='event-details-description'>{data.description}</p>
-            </div>
-          </div>
-        </article>
-      )}
+      <article id='event-details'>{content}</article>
     </>
   );
 }
