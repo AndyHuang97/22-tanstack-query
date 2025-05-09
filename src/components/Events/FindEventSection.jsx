@@ -12,8 +12,8 @@ export default function FindEventSection() {
   // use isLoading instead of isPending, 
   // because isLoading will not be true if the uery is disabled
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["events", {search: searchTerm}],
-    queryFn: ({ signal }) => fetchEvents({ signal, searchTerm }), // destructure the default object passed by react query
+    queryKey: ["events", {searchTerm: searchTerm}],
+    queryFn: ({ signal, queryKey }) => fetchEvents({ signal, ...queryKey[1] }), // destructure the default object passed by react query
     enabled: searchTerm !== undefined // undefined is the initial state, after input clear the input becomes empty string ''
   });
 
